@@ -469,7 +469,8 @@ delete_route () {
   case "$SYSTYPE" in
 	SunOS)	return 0;;
 	*BSD)	CMD="$ROUTE -n delete -host $ipaddr";;
-	*)	CMD="$ROUTE -n del -host $ipaddr";;
+        *)      MYROUTE=$(ip r s | grep "src $ipaddr")
+                CMD="ip r d $myroute" ;;
   esac
 
   $CMD
@@ -637,7 +638,7 @@ ip_start() {
     fi
 
     add_interface "$OCF_RESKEY_ip" "$OCF_RESKEY_nic" "$NIC_unique" \
-		 "$OCF_RESKEY_cidr_netmask" "$OCF_RESKEY_broadcast"
+		 "$OCF_RESKEY_cidr_netmask" "$OCF_RESKEY_broadcast" && delete_route "$OCF_RESKEY_ip"
     rc=$?
     if [ $rc != 0 ]; then
 	ocf_log err "Could not add $OCF_RESKEY_ip to $OCF_RESKEY_nic: rc=$rc"
