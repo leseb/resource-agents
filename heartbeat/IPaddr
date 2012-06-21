@@ -470,7 +470,7 @@ delete_route () {
 	SunOS)	return 0;;
 	*BSD)	CMD="$ROUTE -n delete -host $ipaddr";;
         *)      MYROUTE=$(ip r s | grep "src $ipaddr")
-                CMD="ip r d $myroute" ;;
+                CMD="ip r d $MYROUTE" ;;
   esac
 
   $CMD
